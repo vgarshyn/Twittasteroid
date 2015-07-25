@@ -12,7 +12,7 @@ import io.fabric.sdk.android.Fabric;
  */
 public class TwittApplication extends Application {
     private static final String TAG = TwittApplication.class.getSimpleName();
-    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+
     private static final String TWITTER_KEY = "RwpDXcYjyV065Et3gxchK7g4S";
     private static final String TWITTER_SECRET = "3cBp8LlOOd72kNUltqtfOYAUuVgJXlbsqnyGrZ05SYWGdyjoAp ";
 

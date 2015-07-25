@@ -25,4 +25,18 @@ public final class Util {
         return true;
     }
 
+    /**
+     * Modify url to retrieve big user image
+     * details: https://dev.twitter.com/overview/general/user-profile-images-and-banners
+     *
+     * @param url
+     * @return
+     */
+    public static String getTweetUserOriginalImageUrl(String url) {
+        if (!TextUtils.isEmpty(url) && url.length() > 10) {
+            return url.replace("_normal", "");
+        }
+        return url;
+    }
+
 }
