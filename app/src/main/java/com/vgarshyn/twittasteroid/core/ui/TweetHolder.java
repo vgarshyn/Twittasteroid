@@ -52,6 +52,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
 
     }
 
+    //TODO: UI resizing and optimiztions
     private void showTweetPhoto(Tweet displayTweet) {
         MediaEntity entity = Util.getLastPhotoEntity(displayTweet);
         if (entity != null) {

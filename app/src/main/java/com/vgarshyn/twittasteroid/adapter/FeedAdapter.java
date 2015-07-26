@@ -38,7 +38,7 @@ public class FeedAdapter extends RecyclerView.Adapter<TweetHolder> {
     }
 
     public void updateDataSet(List<Tweet> dataset) {
-        this.dataset = dataset;
+        this.dataset.addAll(dataset);
         notifyDataSetChanged();
     }
 
