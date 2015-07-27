@@ -19,6 +19,7 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.StatusesService;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.adapter.FeedAdapter;
+import com.vgarshyn.twittasteroid.core.ui.DividerItemDecoration;
 import com.vgarshyn.twittasteroid.core.ui.EndlessScrollListener;
 
 import java.util.List;
@@ -54,6 +55,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mFeedAdapter = new FeedAdapter();
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mFeedAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
