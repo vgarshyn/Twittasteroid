@@ -21,6 +21,7 @@ import com.vgarshyn.twittasteroid.core.Util;
  */
 public class TweetHolder extends RecyclerView.ViewHolder {
     private static final String TAG = TweetHolder.class.getSimpleName();
+    TextView textAuthor;
     TextView textContent;
     ImageView imageUser;
     AspectRatioImageView imageTweetPhoto;
@@ -30,6 +31,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
         super(itemView);
         context = itemView.getContext().getApplicationContext();
         textContent = (TextView) itemView.findViewById(R.id.text_tweet_content);
+        textAuthor = (TextView) itemView.findViewById(R.id.text_author);
         imageUser = (ImageView) itemView.findViewById(R.id.image_user_profile);
         imageTweetPhoto = (AspectRatioImageView) itemView.findViewById(R.id.image_tweet_photo);
     }
@@ -41,6 +43,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
 
     public void render(Tweet tweet) {
         textContent.setText(tweet.text);
+        textAuthor.setText(tweet.user.name);
         showUserPhoto(tweet);
         showTweetPhoto(tweet);
     }

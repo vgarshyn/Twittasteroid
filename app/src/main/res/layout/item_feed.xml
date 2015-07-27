@@ -28,13 +28,25 @@
             android:layout_height="72dp"
             android:scaleType="fitCenter" />
 
-        <TextView
-            android:id="@+id/text_tweet_content"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:text="Sample text" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/material_blue_grey_800"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_tweet_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView
