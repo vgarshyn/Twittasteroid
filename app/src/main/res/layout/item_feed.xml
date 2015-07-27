@@ -37,12 +37,9 @@
             android:text="Sample text" />
     </LinearLayout>
 
-    <ImageView
+    <com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView
         android:id="@+id/image_tweet_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/content_wrapper"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/tw__ic_tweet_verified"
-        android:visibility="visible" />
+        android:visibility="gone" />
 </LinearLayout>

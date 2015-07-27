@@ -1,8 +1,8 @@
 package com.vgarshyn.twittasteroid.core.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.core.Util;
 
@@ -22,7 +23,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
     private static final String TAG = TweetHolder.class.getSimpleName();
     TextView textContent;
     ImageView imageUser;
-    ImageView imageTweetPhoto;
+    AspectRatioImageView imageTweetPhoto;
     Context context;
 
     TweetHolder(View itemView) {
@@ -30,7 +31,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
         context = itemView.getContext().getApplicationContext();
         textContent = (TextView) itemView.findViewById(R.id.text_tweet_content);
         imageUser = (ImageView) itemView.findViewById(R.id.image_user_profile);
-        imageTweetPhoto = (ImageView) itemView.findViewById(R.id.image_tweet_photo);
+        imageTweetPhoto = (AspectRatioImageView) itemView.findViewById(R.id.image_tweet_photo);
     }
 
     public static TweetHolder instantiate(ViewGroup parent) {
@@ -52,17 +53,26 @@ public class TweetHolder extends RecyclerView.ViewHolder {
 
     }
 
-    //TODO: UI resizing and optimiztions
     private void showTweetPhoto(Tweet displayTweet) {
         MediaEntity entity = Util.getLastPhotoEntity(displayTweet);
+        clearMediaBackground();
         if (entity != null) {
+            imageTweetPhoto.resetSize();
+            imageTweetPhoto.setAspectRatio(Util.getAspectRatio(entity));
             imageTweetPhoto.setVisibility(ImageView.VISIBLE);
-            Log.e(TAG, entity.mediaUrl);
             Picasso.with(context)
                     .load(entity.mediaUrl)
                     .into(imageTweetPhoto);
         } else {
             imageTweetPhoto.setVisibility(ImageView.GONE);
+        }
+    }
+
+    protected void clearMediaBackground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            imageTweetPhoto.setBackground(null);
+        } else {
+            imageTweetPhoto.setBackgroundDrawable(null);
         }
     }
 

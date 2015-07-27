@@ -11,6 +11,7 @@ import java.util.List;
  * Created by v.garshyn on 23.07.15.
  */
 public final class Util {
+    static final double DEFAULT_ASPECT_RATIO = 16.0 / 9.0;
     private static final String PHOTO_TYPE = "photo";
 
     /**
@@ -67,4 +68,12 @@ public final class Util {
         return null;
     }
 
+    public static double getAspectRatio(MediaEntity photoEntity) {
+        if (photoEntity == null || photoEntity.sizes == null || photoEntity.sizes.medium == null ||
+                photoEntity.sizes.medium.w == 0 || photoEntity.sizes.medium.h == 0) {
+            return DEFAULT_ASPECT_RATIO;
+        }
+
+        return (double) photoEntity.sizes.medium.w / photoEntity.sizes.medium.h;
+    }
 }
