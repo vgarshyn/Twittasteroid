@@ -1,6 +1,7 @@
 package com.vgarshyn.twittasteroid.core.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
+import com.vgarshyn.twittasteroid.PhotoViewActivity;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.core.Util;
 
@@ -57,7 +59,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
     }
 
     private void showTweetPhoto(Tweet displayTweet) {
-        MediaEntity entity = Util.getLastPhotoEntity(displayTweet);
+        final MediaEntity entity = Util.getLastPhotoEntity(displayTweet);
         clearMediaBackground();
         if (entity != null) {
             imageTweetPhoto.resetSize();
@@ -66,6 +68,15 @@ public class TweetHolder extends RecyclerView.ViewHolder {
             Picasso.with(context)
                     .load(entity.mediaUrl)
                     .into(imageTweetPhoto);
+            imageTweetPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PhotoViewActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(PhotoViewActivity.EXTRA_PHOTO_URL, entity.mediaUrl);
+                    context.startActivity(intent);
+                }
+            });
         } else {
             imageTweetPhoto.setVisibility(ImageView.GONE);
         }
