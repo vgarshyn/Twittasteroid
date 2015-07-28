@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,9 @@ public class TweetHolder extends RecyclerView.ViewHolder {
         textAuthor.setText(tweet.user.name);
         showUserPhoto(tweet);
         showTweetPhoto(tweet);
+        if (Util.isContainsVideo(tweet)) {
+            Log.e(TAG, "Video contains: true");
+        }
     }
 
     private void showUserPhoto(Tweet tweet) {

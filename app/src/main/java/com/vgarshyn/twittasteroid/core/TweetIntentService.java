@@ -73,7 +73,7 @@ public class TweetIntentService extends IntentService {
 
     private void handleActionRefresh() {
         StatusesService service = Twitter.getInstance().getApiClient().getStatusesService();
-        service.homeTimeline(REQUEST_TWEET_COUNT, null, null, null, null, null, null, new Callback<List<Tweet>>() {
+        service.homeTimeline(REQUEST_TWEET_COUNT, null, null, null, null, null, true, new Callback<List<Tweet>>() {
                     @Override
                     public void success(Result<List<Tweet>> result) {
                         List<Tweet> data = result.data;

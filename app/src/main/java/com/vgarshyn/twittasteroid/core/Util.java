@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.models.UrlEntity;
 
 import java.util.List;
 
@@ -81,5 +82,26 @@ public final class Util {
         }
 
         return (double) photoEntity.sizes.medium.w / photoEntity.sizes.medium.h;
+    }
+
+    /**
+     * Check is tweet contains video link.
+     * NOTICE: Now twitter API not return valid entities with video...
+     *
+     * @param tweet
+     * @return
+     */
+    public static boolean isContainsVideo(Tweet tweet) {
+        if (tweet.entities != null) {
+            List<UrlEntity> mediaEntityList = tweet.entities.urls;
+            if (mediaEntityList != null && !mediaEntityList.isEmpty()) {
+                UrlEntity entity;
+                for (int i = mediaEntityList.size() - 1; i >= 0; i--) {
+                    entity = mediaEntityList.get(i);
+                    return !TextUtils.isEmpty(entity.expandedUrl) && entity.expandedUrl.startsWith("https://amp.twimg.com");
+                }
+            }
+        }
+        return false;
     }
 }
