@@ -68,6 +68,12 @@ public final class Util {
         return null;
     }
 
+    /**
+     * Calculate ratio for best image scaling
+     *
+     * @param photoEntity
+     * @return
+     */
     public static double getAspectRatio(MediaEntity photoEntity) {
         if (photoEntity == null || photoEntity.sizes == null || photoEntity.sizes.medium == null ||
                 photoEntity.sizes.medium.w == 0 || photoEntity.sizes.medium.h == 0) {

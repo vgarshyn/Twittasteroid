@@ -3,7 +3,6 @@
     package="com.vgarshyn.twittasteroid">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".TwittApplication"
@@ -32,9 +31,17 @@
 
         <activity
             android:name=".PhotoViewActivity"
-            android:label="@string/title_activity_photo_view"></activity>
-
+            android:label="@string/title_activity_photo_view" />
         <activity android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity" />
+
+        <service
+            android:name=".core.TweetIntentService"
+            android:exported="false"></service>
+
+        <provider
+            android:name=".contentprovider.TweetContentProvider"
+            android:authorities="com.twittasteroid"
+            android:exported="false" />
     </application>
 
 </manifest>

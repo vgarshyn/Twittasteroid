@@ -1,7 +1,15 @@
 package com.vgarshyn.twittasteroid.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +27,8 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.StatusesService;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.adapter.FeedAdapter;
+import com.vgarshyn.twittasteroid.core.TweetDataLoader;
+import com.vgarshyn.twittasteroid.core.TweetIntentService;
 import com.vgarshyn.twittasteroid.core.ui.DividerItemDecoration;
 import com.vgarshyn.twittasteroid.core.ui.EndlessScrollListener;
 
@@ -27,7 +37,7 @@ import java.util.List;
 /**
  * Created by v.garshyn on 25.07.15.
  */
-public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Tweet>> {
     private static final String TAG = FeedFragment.class.getSimpleName();
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -35,6 +45,23 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private RecyclerView mRecyclerView;
     private long mLastId;
     private LinearLayoutManager layoutManager;
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (TweetIntentService.ACTION_CANCEL_REFRESH.equals(action)) {
+                getLoaderManager().restartLoader(23, null, FeedFragment.this);
+            }
+        }
+    };
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        LocalBroadcastManager.getInstance(activity).registerReceiver(
+                mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_CANCEL_REFRESH));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,10 +89,10 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mRecyclerView.addOnScrollListener(new EndlessScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
-                loadTweets(mLastId);
+//                loadTweets(mLastId);
             }
         });
-//        loadTweets(0);
+        getLoaderManager().initLoader(23, null, this);
     }
 
     public void loadTweets(long lastid) {
@@ -74,6 +101,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         service.homeTimeline(50, null, lastId, null, null, null, null, new Callback<List<Tweet>>() {
                     @Override
                     public void success(Result<List<Tweet>> result) {
+
                         List<Tweet> data = result.data;
                         if (data != null && data.size() > 0) {
                             mFeedAdapter.updateDataSet(data);
@@ -100,6 +128,26 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        loadTweets(0);
+        TweetIntentService.startActionRefresh(getActivity());
     }
+
+    @Override
+    public Loader<List<Tweet>> onCreateLoader(int id, Bundle args) {
+        return new TweetDataLoader(getActivity());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Tweet>> loader, List<Tweet> data) {
+        cancelRefresh();
+        mFeedAdapter.updateDataSet(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Tweet>> loader) {
+
+    }
+
+
+
+
 }
