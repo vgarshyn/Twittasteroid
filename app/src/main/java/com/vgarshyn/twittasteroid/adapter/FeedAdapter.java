@@ -42,4 +42,11 @@ public class FeedAdapter extends RecyclerView.Adapter<TweetHolder> {
         notifyDataSetChanged();
     }
 
+    public void refreshDataSet(List<Tweet> dataset) {
+        this.dataset.clear();
+        notifyDataSetChanged();
+        this.dataset.addAll(dataset);
+        notifyDataSetChanged();
+    }
+
 }

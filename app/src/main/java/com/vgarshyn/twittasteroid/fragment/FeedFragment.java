@@ -40,6 +40,8 @@ import java.util.List;
 public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Tweet>> {
     private static final String TAG = FeedFragment.class.getSimpleName();
 
+    private static final int LOADER_ID_REFRESH = 23;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter mFeedAdapter;
     private RecyclerView mRecyclerView;
@@ -50,8 +52,12 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (TweetIntentService.ACTION_CANCEL_REFRESH.equals(action)) {
-                getLoaderManager().restartLoader(23, null, FeedFragment.this);
+            if (TweetIntentService.ACTION_REFRESH_COMPLETED.equals(action)) {
+                if (intent.hasExtra(TweetIntentService.EXTRA_ERROR)) {
+                    Toast.makeText(getActivity(), intent.getStringExtra(TweetIntentService.EXTRA_ERROR), Toast.LENGTH_LONG).show();
+                } else {
+                    getLoaderManager().restartLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
+                }
             }
         }
     };
@@ -60,7 +66,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         LocalBroadcastManager.getInstance(activity).registerReceiver(
-                mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_CANCEL_REFRESH));
+                mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_REFRESH_COMPLETED));
     }
 
     @Override
@@ -92,7 +98,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 //                loadTweets(mLastId);
             }
         });
-        getLoaderManager().initLoader(23, null, this);
+        getLoaderManager().initLoader(LOADER_ID_REFRESH, null, this);
     }
 
     public void loadTweets(long lastid) {
@@ -139,7 +145,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onLoadFinished(Loader<List<Tweet>> loader, List<Tweet> data) {
         cancelRefresh();
-        mFeedAdapter.updateDataSet(data);
+        mFeedAdapter.refreshDataSet(data);
     }
 
     @Override

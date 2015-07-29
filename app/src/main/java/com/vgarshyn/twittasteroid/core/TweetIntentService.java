@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.twitter.sdk.android.Twitter;
@@ -22,12 +23,10 @@ public class TweetIntentService extends IntentService {
     public static final int REQUEST_TWEET_COUNT = 50;
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_REFRESH = "twittasteroid.action.REFRESH";
-    public static final String ACTION_CANCEL_REFRESH = "twittasteroid.action.CANCEL_REFRESH";
+    public static final String ACTION_REFRESH_COMPLETED = "twittasteroid.action.CANCEL_REFRESH";
+    public static final String EXTRA_ERROR = "twittasteroid.extra.PARAM_ERROR";
     private static final String TAG = TweetIntentService.class.getSimpleName();
     private static final String ACTION_LOAD = "twittasteroid.core.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.vgarshyn.twittasteroid.core.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "com.vgarshyn.twittasteroid.core.extra.PARAM2";
 
     private Gson gson = new Gson();
@@ -52,7 +51,7 @@ public class TweetIntentService extends IntentService {
     public static void startActionLoad(Context context) {
         Intent intent = new Intent(context, TweetIntentService.class);
         intent.setAction(ACTION_LOAD);
-//        intent.putExtra(EXTRA_PARAM1, param1);
+//        intent.putExtra(EXTRA_ERROR, param1);
 //        intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
@@ -64,7 +63,7 @@ public class TweetIntentService extends IntentService {
             if (ACTION_REFRESH.equals(action)) {
                 handleActionRefresh();
             } else if (ACTION_LOAD.equals(action)) {
-//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+//                final String param1 = intent.getStringExtra(EXTRA_ERROR);
 //                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionLoad(null, null);
             }
@@ -78,14 +77,12 @@ public class TweetIntentService extends IntentService {
                     public void success(Result<List<Tweet>> result) {
                         List<Tweet> data = result.data;
                         storeData(data);
-                        cancelRefresh();
+                        refreshCompleted(null);
                     }
 
                     @Override
                     public void failure(TwitterException error) {
-//                        Toast.makeText(getActivity(), "Failed to retrieve timeline",
-//                                Toast.LENGTH_SHORT).show();
-                        cancelRefresh();
+                        refreshCompleted(error.getLocalizedMessage());
                     }
                 }
         );
@@ -105,10 +102,12 @@ public class TweetIntentService extends IntentService {
         getContentResolver().bulkInsert(TweetColumns.CONTENT_URI, bulkDataset);
     }
 
-    private void cancelRefresh() {
-        Intent intent = new Intent(ACTION_CANCEL_REFRESH);
+    private void refreshCompleted(String errorMessage) {
+        Intent intent = new Intent(ACTION_REFRESH_COMPLETED);
+        if (!TextUtils.isEmpty(errorMessage)) {
+            intent.putExtra(EXTRA_ERROR, errorMessage);
+        }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
     }
 
     /**
