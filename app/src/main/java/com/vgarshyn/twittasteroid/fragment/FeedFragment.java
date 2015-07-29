@@ -1,6 +1,5 @@
 package com.vgarshyn.twittasteroid.fragment;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
@@ -53,7 +52,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 if (intent.hasExtra(TweetIntentService.EXTRA_ERROR)) {
                     Toast.makeText(getActivity(), intent.getStringExtra(TweetIntentService.EXTRA_ERROR), Toast.LENGTH_LONG).show();
                 } else {
-//                    getLoaderManager().restartLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
                     getLoaderManager().initLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
                 }
             } else if (TweetIntentService.ACTION_LOAD_MORE_COMPLETED.equals(action)) {
@@ -71,13 +69,15 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     };
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        LocalBroadcastManager.getInstance(activity).registerReceiver(
-                mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_REFRESH_COMPLETED));
-        LocalBroadcastManager.getInstance(activity).registerReceiver(
-                mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_LOAD_MORE_COMPLETED));
+    private void registerReceivers(Context context) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(TweetIntentService.ACTION_REFRESH_COMPLETED);
+        filter.addAction(TweetIntentService.ACTION_LOAD_MORE_COMPLETED);
+        LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver, filter);
+    }
+
+    private void unregisterReceivers(Context context) {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
@@ -111,6 +111,18 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         });
 //        getLoaderManager().initLoader(LOADER_ID_REFRESH, null, this);
         getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceivers(getActivity());
+    }
+
+    @Override
+    public void onPause() {
+        unregisterReceivers(getActivity());
+        super.onPause();
     }
 
     public void loadTweets(Long lastid) {
