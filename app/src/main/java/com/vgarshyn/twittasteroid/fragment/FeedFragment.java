@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,9 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter mFeedAdapter;
     private RecyclerView mRecyclerView;
+
     private LinearLayoutManager layoutManager;
+    private EndlessScrollListener mEndlessScrollListener;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -89,6 +92,13 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.feed_list);
         layoutManager = new LinearLayoutManager(getActivity());
+        mEndlessScrollListener = new EndlessScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int currentPage) {
+                setExternalLoadingFlag(true);
+                loadTweets(mFeedAdapter.getLastTweetId());
+            }
+        };
     }
 
     @Override
@@ -100,12 +110,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mFeedAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.addOnScrollListener(new EndlessScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int currentPage) {
-                loadTweets(mFeedAdapter.getLastTweetId());
-            }
-        });
+        mRecyclerView.addOnScrollListener(mEndlessScrollListener);
         getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
     }
 
@@ -122,6 +127,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     public void loadTweets(Long lastid) {
+        mFeedAdapter.showProgressBarFooter();
+        Log.e(TAG, "Load tweets");
         TweetIntentService.startActionLoadMore(getActivity(), lastid);
   /*      final StatusesService service = Twitter.getInstance().getApiClient().getStatusesService();
         Long lastId = lastid == 0 ? null : lastid;
@@ -177,6 +184,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 mFeedAdapter.refreshDataSet(data);
                 break;
             case LOADER_ID_LOAD_MORE:
+                mFeedAdapter.hideProgressBarFooter();
+                mEndlessScrollListener.setExternalLoadingFlag(false);
                 mFeedAdapter.updateDataSet(data);
                 break;
         }

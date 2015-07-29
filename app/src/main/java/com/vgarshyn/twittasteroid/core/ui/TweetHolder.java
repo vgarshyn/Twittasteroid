@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -29,7 +28,7 @@ import com.vgarshyn.twittasteroid.core.Util;
 /**
  * Created by v.garshyn on 26.07.15.
  */
-public class TweetHolder extends RecyclerView.ViewHolder {
+public class TweetHolder extends AbstractHolder {
     private static final String TAG = TweetHolder.class.getSimpleName();
     final int colorFullname;
     final int colorUsername;
@@ -40,14 +39,14 @@ public class TweetHolder extends RecyclerView.ViewHolder {
     AspectRatioImageView imageTweetPhoto;
     Context context;
 
-    TweetHolder(View itemView) {
-        super(itemView);
-        context = itemView.getContext().getApplicationContext();
-        textContent = (TextView) itemView.findViewById(R.id.text_tweet_content);
-        textAuthor = (TextView) itemView.findViewById(R.id.text_author);
-        textTime = (TextView) itemView.findViewById(R.id.text_time);
-        imageUser = (ImageView) itemView.findViewById(R.id.image_user_profile);
-        imageTweetPhoto = (AspectRatioImageView) itemView.findViewById(R.id.image_tweet_photo);
+    TweetHolder(View view) {
+        super(view);
+        context = view.getContext().getApplicationContext();
+        textContent = (TextView) view.findViewById(R.id.text_tweet_content);
+        textAuthor = (TextView) view.findViewById(R.id.text_author);
+        textTime = (TextView) view.findViewById(R.id.text_time);
+        imageUser = (ImageView) view.findViewById(R.id.image_user_profile);
+        imageTweetPhoto = (AspectRatioImageView) view.findViewById(R.id.image_tweet_photo);
         colorFullname = context.getResources().getColor(R.color.tweet_fullname);
         colorUsername = context.getResources().getColor(R.color.tweet_username);
     }
@@ -59,7 +58,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
      * @return
      */
     public static TweetHolder instantiate(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_feed, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
         return new TweetHolder(view);
     }
 
@@ -68,6 +67,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
      *
      * @param tweet
      */
+    @Override
     public void render(Tweet tweet) {
         textContent.setText(tweet.text);
         textAuthor.setText(tweet.user.name);

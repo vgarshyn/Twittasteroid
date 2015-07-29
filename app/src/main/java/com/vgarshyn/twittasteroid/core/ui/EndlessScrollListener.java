@@ -18,6 +18,8 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
 
     private LinearLayoutManager mLinearLayoutManager;
 
+    private boolean externalLoadingFlag = false;
+
     public EndlessScrollListener(LinearLayoutManager linearLayoutManager) {
         this.mLinearLayoutManager = linearLayoutManager;
     }
@@ -25,6 +27,10 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+
+        if (externalLoadingFlag) {
+            return;
+        }
 
         visibleItemCount = recyclerView.getChildCount();
         totalItemCount = mLinearLayoutManager.getItemCount();
@@ -49,5 +55,9 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
     }
 
     public abstract void onLoadMore(int currentPage);
+
+    public void setExternalLoadingFlag(boolean loading) {
+        externalLoadingFlag = loading;
+    }
 
 }
