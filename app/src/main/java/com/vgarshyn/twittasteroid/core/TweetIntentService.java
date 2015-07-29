@@ -49,11 +49,11 @@ public class TweetIntentService extends IntentService {
      * @see IntentService
      */
     // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
+    public static void startActionLoad(Context context) {
         Intent intent = new Intent(context, TweetIntentService.class);
         intent.setAction(ACTION_LOAD);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+//        intent.putExtra(EXTRA_PARAM1, param1);
+//        intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
 
@@ -64,9 +64,9 @@ public class TweetIntentService extends IntentService {
             if (ACTION_REFRESH.equals(action)) {
                 handleActionRefresh();
             } else if (ACTION_LOAD.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
+//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
+                handleActionLoad(null, null);
             }
         }
     }
@@ -115,8 +115,7 @@ public class TweetIntentService extends IntentService {
      * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void handleActionLoad(String param1, String param2) {
+
     }
 }

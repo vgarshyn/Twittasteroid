@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +25,7 @@ import uk.co.senab.photoview.PhotoView;
 /**
  * Created by v.garshyn on 26.07.15.
  */
-public class PhotoViewActivity extends ActionBarActivity {
+public class PhotoViewActivity extends AppCompatActivity {
     public static final String EXTRA_PHOTO_URL = "extra.photo_url";
     private static final String TAG = PhotoViewActivity.class.getSimpleName();
     private static final int REQUEST_DIRECTORY = 2707;

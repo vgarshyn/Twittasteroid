@@ -31,11 +31,6 @@ public class TweetDataLoader extends AsyncTaskLoader<List<Tweet>> {
         List<Tweet> data = new ArrayList<Tweet>();
         TweetSelection selection = new TweetSelection().orderByTweetId(true);
         TweetCursor cursor = selection.query(getContext());
-//        Cursor cursor1 = getContext().getContentResolver().query(TweetColumns.CONTENT_URI, null, null, null, null);
-//        TweetCursor cursor = null;
-//        if (cursor1 != null) {
-//            cursor = new TweetCursor(cursor1);
-//        }
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             Gson gson = new Gson();
