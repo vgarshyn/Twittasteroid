@@ -49,4 +49,10 @@ public class FeedAdapter extends RecyclerView.Adapter<TweetHolder> {
         notifyDataSetChanged();
     }
 
+    public Long getLastTweetId() {
+        if (dataset.size() > 0) {
+            return dataset.get(dataset.size() - 1).getId();
+        }
+        return null;
+    }
 }

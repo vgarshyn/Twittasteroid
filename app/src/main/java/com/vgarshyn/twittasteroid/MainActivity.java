@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.twitter.sdk.android.Twitter;
-import com.vgarshyn.twittasteroid.core.TweetIntentService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        TweetIntentService.startActionLoad(this);
+//        TweetIntentService.startActionLoadMore(this);
     }
 
     @Override

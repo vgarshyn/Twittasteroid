@@ -24,11 +24,11 @@ public class TweetIntentService extends IntentService {
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_REFRESH = "twittasteroid.action.REFRESH";
     public static final String ACTION_REFRESH_COMPLETED = "twittasteroid.action.CANCEL_REFRESH";
+    public static final String ACTION_LOAD_MORE = "twittasteroid.action.LOAD_MORE";
+    public static final String ACTION_LOAD_MORE_COMPLETED = "twittasteroid.action.LOAD_MORE_COMPLETED";
     public static final String EXTRA_ERROR = "twittasteroid.extra.PARAM_ERROR";
+    public static final String EXTRA_MAX_ID = "twittasteroid.extra.PARAM_MAX_ID";
     private static final String TAG = TweetIntentService.class.getSimpleName();
-    private static final String ACTION_LOAD = "twittasteroid.core.action.BAZ";
-    private static final String EXTRA_PARAM2 = "com.vgarshyn.twittasteroid.core.extra.PARAM2";
-
     private Gson gson = new Gson();
 
     public TweetIntentService() {
@@ -47,11 +47,12 @@ public class TweetIntentService extends IntentService {
      *
      * @see IntentService
      */
-    // TODO: Customize helper method
-    public static void startActionLoad(Context context) {
+    public static void startActionLoadMore(Context context, Long maxid) {
         Intent intent = new Intent(context, TweetIntentService.class);
-        intent.setAction(ACTION_LOAD);
-//        intent.putExtra(EXTRA_ERROR, param1);
+        intent.setAction(ACTION_LOAD_MORE);
+        if (maxid != null) {
+            intent.putExtra(EXTRA_MAX_ID, maxid);
+        }
 //        intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
@@ -62,10 +63,12 @@ public class TweetIntentService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_REFRESH.equals(action)) {
                 handleActionRefresh();
-            } else if (ACTION_LOAD.equals(action)) {
-//                final String param1 = intent.getStringExtra(EXTRA_ERROR);
-//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionLoad(null, null);
+            } else if (ACTION_LOAD_MORE.equals(action)) {
+                Long maxId = null;
+                if (intent.hasExtra(EXTRA_MAX_ID)) {
+                    maxId = intent.getLongExtra(EXTRA_MAX_ID, 0);
+                }
+                handleActionLoadMore(maxId);
             }
         }
     }
@@ -110,11 +113,35 @@ public class TweetIntentService extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionLoad(String param1, String param2) {
+    private void handleActionLoadMore(final Long paramMaxId) {
+        StatusesService service = Twitter.getInstance().getApiClient().getStatusesService();
+        service.homeTimeline(REQUEST_TWEET_COUNT, null, paramMaxId, null, null, null, true, new Callback<List<Tweet>>() {
+                    @Override
+                    public void success(Result<List<Tweet>> result) {
+                        List<Tweet> data = result.data;
+                        storeData(data);
+                        loadMoreCompleted(paramMaxId);
+                    }
 
+                    @Override
+                    public void failure(TwitterException error) {
+                        loadMoreCompleted(error.getLocalizedMessage());
+                    }
+                }
+        );
+    }
+
+    private void loadMoreCompleted(Long maxId) {
+        Intent intent = new Intent(ACTION_LOAD_MORE_COMPLETED);
+        intent.putExtra(EXTRA_MAX_ID, maxId);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void loadMoreCompleted(String errorMessage) {
+        Intent intent = new Intent(ACTION_LOAD_MORE_COMPLETED);
+        if (!TextUtils.isEmpty(errorMessage)) {
+            intent.putExtra(EXTRA_ERROR, errorMessage);
+        }
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

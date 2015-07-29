@@ -19,12 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.core.services.StatusesService;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.adapter.FeedAdapter;
 import com.vgarshyn.twittasteroid.core.TweetDataLoader;
@@ -40,7 +35,9 @@ import java.util.List;
 public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Tweet>> {
     private static final String TAG = FeedFragment.class.getSimpleName();
 
+    private static final String ARG_SINCE_ID = "arg.since_id";
     private static final int LOADER_ID_REFRESH = 23;
+    private static final int LOADER_ID_LOAD_MORE = 24;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter mFeedAdapter;
@@ -56,9 +53,21 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 if (intent.hasExtra(TweetIntentService.EXTRA_ERROR)) {
                     Toast.makeText(getActivity(), intent.getStringExtra(TweetIntentService.EXTRA_ERROR), Toast.LENGTH_LONG).show();
                 } else {
-                    getLoaderManager().restartLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
+//                    getLoaderManager().restartLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
+                    getLoaderManager().initLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
+                }
+            } else if (TweetIntentService.ACTION_LOAD_MORE_COMPLETED.equals(action)) {
+                if (intent.hasExtra(TweetIntentService.EXTRA_ERROR)) {
+                    Toast.makeText(getActivity(), intent.getStringExtra(TweetIntentService.EXTRA_ERROR), Toast.LENGTH_LONG).show();
+                } else {
+                    Bundle bundle = new Bundle();
+                    if (intent.hasExtra(TweetIntentService.EXTRA_MAX_ID)) {
+                        bundle.putLong(ARG_SINCE_ID, intent.getLongExtra(TweetIntentService.EXTRA_MAX_ID, 0));
+                    }
+                    getLoaderManager().restartLoader(LOADER_ID_LOAD_MORE, bundle, FeedFragment.this);
                 }
             }
+
         }
     };
 
@@ -67,6 +76,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onAttach(activity);
         LocalBroadcastManager.getInstance(activity).registerReceiver(
                 mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_REFRESH_COMPLETED));
+        LocalBroadcastManager.getInstance(activity).registerReceiver(
+                mMessageReceiver, new IntentFilter(TweetIntentService.ACTION_LOAD_MORE_COMPLETED));
     }
 
     @Override
@@ -95,14 +106,16 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mRecyclerView.addOnScrollListener(new EndlessScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int currentPage) {
-//                loadTweets(mLastId);
+                loadTweets(mFeedAdapter.getLastTweetId());
             }
         });
-        getLoaderManager().initLoader(LOADER_ID_REFRESH, null, this);
+//        getLoaderManager().initLoader(LOADER_ID_REFRESH, null, this);
+        getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
     }
 
-    public void loadTweets(long lastid) {
-        final StatusesService service = Twitter.getInstance().getApiClient().getStatusesService();
+    public void loadTweets(Long lastid) {
+        TweetIntentService.startActionLoadMore(getActivity(), lastid);
+  /*      final StatusesService service = Twitter.getInstance().getApiClient().getStatusesService();
         Long lastId = lastid == 0 ? null : lastid;
         service.homeTimeline(50, null, lastId, null, null, null, null, new Callback<List<Tweet>>() {
                     @Override
@@ -123,7 +136,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         cancelRefresh();
                     }
                 }
-        );
+        );*/
     }
 
     private void cancelRefresh() {
@@ -139,21 +152,32 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public Loader<List<Tweet>> onCreateLoader(int id, Bundle args) {
-        return new TweetDataLoader(getActivity());
+        TweetDataLoader loader;
+        if (args != null && args.containsKey(ARG_SINCE_ID)) {
+            loader = new TweetDataLoader(getActivity(), args.getLong(ARG_SINCE_ID, 0));
+        } else {
+            loader = new TweetDataLoader(getActivity());
+        }
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<List<Tweet>> loader, List<Tweet> data) {
-        cancelRefresh();
-        mFeedAdapter.refreshDataSet(data);
+        switch (loader.getId()) {
+            case LOADER_ID_REFRESH:
+                cancelRefresh();
+                mFeedAdapter.refreshDataSet(data);
+                break;
+            case LOADER_ID_LOAD_MORE:
+                mFeedAdapter.updateDataSet(data);
+                break;
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<List<Tweet>> loader) {
 
     }
-
-
 
 
 }
