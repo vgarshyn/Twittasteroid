@@ -6,14 +6,21 @@ import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.models.UrlEntity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by v.garshyn on 23.07.15.
  */
 public final class Util {
-    static final double DEFAULT_ASPECT_RATIO = 16.0 / 9.0;
+    private static final double DEFAULT_ASPECT_RATIO = 16.0 / 9.0;
     private static final String PHOTO_TYPE = "photo";
+    private static final String EMPTY_STRING = "";
+
+    private static final SimpleDateFormat TWITTER_TIMESTAMP = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     /**
      * Check is empty for multiple strings, sometimes it very useful
@@ -104,4 +111,17 @@ public final class Util {
         }
         return false;
     }
+
+    public static String formatDate(String apiTime) {
+        if (apiTime == null) {
+            return EMPTY_STRING;
+        }
+        try {
+            long datetime = TWITTER_TIMESTAMP.parse(apiTime).getTime();
+            return DATE_FORMAT.format(datetime);
+        } catch (ParseException e) {
+            return EMPTY_STRING;
+        }
+    }
+
 }

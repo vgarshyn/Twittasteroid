@@ -2,8 +2,15 @@ package com.vgarshyn.twittasteroid.core.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +33,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
     private static final String TAG = TweetHolder.class.getSimpleName();
     TextView textAuthor;
     TextView textContent;
+    TextView textTime;
     ImageView imageUser;
     AspectRatioImageView imageTweetPhoto;
     Context context;
@@ -35,6 +43,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
         context = itemView.getContext().getApplicationContext();
         textContent = (TextView) itemView.findViewById(R.id.text_tweet_content);
         textAuthor = (TextView) itemView.findViewById(R.id.text_author);
+        textTime = (TextView) itemView.findViewById(R.id.text_time);
         imageUser = (ImageView) itemView.findViewById(R.id.image_user_profile);
         imageTweetPhoto = (AspectRatioImageView) itemView.findViewById(R.id.image_tweet_photo);
     }
@@ -47,6 +56,8 @@ public class TweetHolder extends RecyclerView.ViewHolder {
     public void render(Tweet tweet) {
         textContent.setText(tweet.text);
         textAuthor.setText(tweet.user.name);
+        showUserName(tweet);
+        showTimestamp(tweet.createdAt);
         showUserPhoto(tweet);
         showTweetPhoto(tweet);
         if (Util.isContainsVideo(tweet)) {
@@ -60,6 +71,21 @@ public class TweetHolder extends RecyclerView.ViewHolder {
                 .placeholder(R.mipmap.ic_placeholder_twitter)
                 .into(imageUser);
 
+    }
+
+    private void showUserName(Tweet tweet) {
+        SpannableStringBuilder ssb = new SpannableStringBuilder();
+        SpannableString fullname = new SpannableString(tweet.user.name);
+        fullname.setSpan(new StyleSpan(Typeface.BOLD),
+                0, fullname.length(), 0);
+        fullname.setSpan(new ForegroundColorSpan(R.color.tweet_fullname), 0, fullname.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        SpannableString nickname = new SpannableString("@" + tweet.user.screenName);
+        nickname.setSpan(new ForegroundColorSpan(R.color.tweet_username), 0, nickname.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.append(fullname);
+        ssb.append("  ");
+        ssb.append(nickname);
+        textAuthor.setText(ssb);
     }
 
     private void showTweetPhoto(Tweet displayTweet) {
@@ -83,6 +109,16 @@ public class TweetHolder extends RecyclerView.ViewHolder {
             });
         } else {
             imageTweetPhoto.setVisibility(ImageView.GONE);
+        }
+    }
+
+    private void showTimestamp(String createdAt) {
+        String formattedTimestamp = Util.formatDate(createdAt);
+        if (!TextUtils.isEmpty(formattedTimestamp)) {
+            textTime.setText(formattedTimestamp);
+            textTime.setVisibility(View.VISIBLE);
+        } else {
+            textTime.setVisibility(View.GONE);
         }
     }
 
