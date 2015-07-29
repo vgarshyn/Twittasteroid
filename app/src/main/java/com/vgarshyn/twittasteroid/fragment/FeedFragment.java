@@ -82,7 +82,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mFeedAdapter = new FeedAdapter();
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.list_divider));
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mFeedAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
