@@ -1,10 +1,12 @@
 package com.vgarshyn.twittasteroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.twitter.sdk.android.Twitter;
 import com.vgarshyn.twittasteroid.core.TweetIntentService;
 
 
@@ -32,6 +34,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        switch (id) {
+            case R.id.action_logout:
+                logout();
+                return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        Twitter.logOut();
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

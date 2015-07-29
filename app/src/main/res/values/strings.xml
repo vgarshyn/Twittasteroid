@@ -4,6 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_clear">Clear cache</string>
     <string name="action_save">Save picture</string>
+    <string name="action_logout">Logout</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="title_activity_photo_view">PhotoViewActivity</string>
 </resources>
