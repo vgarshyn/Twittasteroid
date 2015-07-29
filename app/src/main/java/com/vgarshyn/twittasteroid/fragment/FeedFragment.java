@@ -23,7 +23,6 @@ import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.adapter.FeedAdapter;
 import com.vgarshyn.twittasteroid.core.TweetDataLoader;
 import com.vgarshyn.twittasteroid.core.TweetIntentService;
-import com.vgarshyn.twittasteroid.core.ui.DividerItemDecoration;
 import com.vgarshyn.twittasteroid.core.ui.EndlessScrollListener;
 
 import java.util.List;
@@ -35,13 +34,12 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private static final String TAG = FeedFragment.class.getSimpleName();
 
     private static final String ARG_SINCE_ID = "arg.since_id";
-    private static final int LOADER_ID_REFRESH = 23;
-    private static final int LOADER_ID_LOAD_MORE = 24;
+    private static final int LOADER_ID_REFRESH = 2023;
+    private static final int LOADER_ID_LOAD_MORE = 2024;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FeedAdapter mFeedAdapter;
     private RecyclerView mRecyclerView;
-    private long mLastId;
     private LinearLayoutManager layoutManager;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -99,7 +97,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mFeedAdapter = new FeedAdapter();
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.list_divider));
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mFeedAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -109,7 +106,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 loadTweets(mFeedAdapter.getLastTweetId());
             }
         });
-//        getLoaderManager().initLoader(LOADER_ID_REFRESH, null, this);
         getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
     }
 
