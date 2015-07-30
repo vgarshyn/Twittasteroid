@@ -116,7 +116,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addOnScrollListener(mEndlessScrollListener);
 
-        initFeedAndLoadFresh();
+        initFeedAndLoadFresh(savedInstanceState == null);
     }
 
     @Override
@@ -134,14 +134,16 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     /**
      * Call on app start. Show old tweets from DB and simultaneously load new data and refresh all when complete.
      */
-    private void initFeedAndLoadFresh() {
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                TweetIntentService.startActionRefresh(getActivity());
-            }
-        });
+    private void initFeedAndLoadFresh(boolean updateFreshFeed) {
+        if (updateFreshFeed) {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    TweetIntentService.startActionRefresh(getActivity());
+                }
+            });
+        }
         getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
     }
 
