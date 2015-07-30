@@ -1,4 +1,4 @@
-package com.vgarshyn.twittasteroid;
+package com.vgarshyn.twittasteroid.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.vgarshyn.twittasteroid.R;
 
 import net.rdrei.android.dirchooser.DirectoryChooserActivity;
 

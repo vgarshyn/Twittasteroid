@@ -1,4 +1,4 @@
-package com.vgarshyn.twittasteroid;
+package com.vgarshyn.twittasteroid.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.core.Util;
 import com.vgarshyn.twittasteroid.core.ui.LogoAnimation;
 

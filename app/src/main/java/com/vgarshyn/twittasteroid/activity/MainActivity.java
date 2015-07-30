@@ -1,4 +1,4 @@
-package com.vgarshyn.twittasteroid;
+package com.vgarshyn.twittasteroid.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.twitter.sdk.android.Twitter;
+import com.vgarshyn.twittasteroid.R;
 
 
 public class MainActivity extends AppCompatActivity {

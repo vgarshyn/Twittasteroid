@@ -24,9 +24,9 @@ import com.twitter.sdk.android.core.models.Coordinates;
 import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
-import com.vgarshyn.twittasteroid.MapActivity;
-import com.vgarshyn.twittasteroid.PhotoViewActivity;
 import com.vgarshyn.twittasteroid.R;
+import com.vgarshyn.twittasteroid.activity.MapActivity;
+import com.vgarshyn.twittasteroid.activity.PhotoViewActivity;
 import com.vgarshyn.twittasteroid.core.Util;
 
 /**

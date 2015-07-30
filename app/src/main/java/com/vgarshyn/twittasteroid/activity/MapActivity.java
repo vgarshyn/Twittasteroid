@@ -1,4 +1,4 @@
-package com.vgarshyn.twittasteroid;
+package com.vgarshyn.twittasteroid.activity;
 
 /**
  * Created by v.garshyn on 30.07.2015.
@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.vgarshyn.twittasteroid.R;
 
 public class MapActivity extends FragmentActivity {
     public static final String TAG = MapActivity.class.getSimpleName();
