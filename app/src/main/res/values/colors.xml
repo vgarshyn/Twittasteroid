@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="splash_screen_background">#28AAE1</color>
+    <color name="youtube_video_background">#ff2c2019</color>
     <color name="tweet_fullname">@color/material_blue_grey_800</color>
     <color name="tweet_username">@color/tw__medium_gray</color>
     <color name="tweet_link">#ff3273a6</color>

@@ -27,6 +27,7 @@ import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.activity.MapActivity;
 import com.vgarshyn.twittasteroid.activity.PhotoViewActivity;
+import com.vgarshyn.twittasteroid.activity.YoutubeVideoActivity;
 import com.vgarshyn.twittasteroid.core.Util;
 
 /**
@@ -214,7 +215,7 @@ public class TweetHolder extends AbstractHolder {
         if (Util.isContainsYoutubeVideo(tweet)) {
             videoContainer.setVisibility(View.VISIBLE);
             String youtubeUrl = Util.getYoutubeVideoUrl(tweet);
-            String youtubeId = Util.extractYoutubeVideoId(youtubeUrl);
+            final String youtubeId = Util.extractYoutubeVideoId(youtubeUrl);
             if (!Util.isEmpty(youtubeUrl, youtubeId)) {
                 Log.e(TAG, "Video contains: true");
                 String previewUrl = Util.getYoutubePreviewUrl(youtubeId);
@@ -235,6 +236,15 @@ public class TweetHolder extends AbstractHolder {
                                 videoContainer.setVisibility(View.GONE);
                             }
                         });
+                videoPreviewOverlay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, YoutubeVideoActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(YoutubeVideoActivity.EXTRA_YOUTUBE_ID, youtubeId);
+                        context.startActivity(intent);
+                    }
+                });
             }
         } else {
             videoPreviewOverlay.setVisibility(View.GONE);
