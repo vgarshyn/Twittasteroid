@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -32,6 +33,9 @@ public class TweetHolder extends AbstractHolder {
     private static final String TAG = TweetHolder.class.getSimpleName();
     final int colorFullname;
     final int colorUsername;
+    final int colorTweetLink;
+    final int colorTweetHash;
+    final int colorTweetMention;
     TextView textAuthor;
     TextView textContent;
     TextView textTime;
@@ -49,6 +53,9 @@ public class TweetHolder extends AbstractHolder {
         imageTweetPhoto = (AspectRatioImageView) view.findViewById(R.id.image_tweet_photo);
         colorFullname = context.getResources().getColor(R.color.tweet_fullname);
         colorUsername = context.getResources().getColor(R.color.tweet_username);
+        colorTweetLink = context.getResources().getColor(R.color.tweet_link);
+        colorTweetHash = context.getResources().getColor(R.color.tweet_hashtag);
+        colorTweetMention = context.getResources().getColor(R.color.tweet_mention);
     }
 
     /**
@@ -69,8 +76,7 @@ public class TweetHolder extends AbstractHolder {
      */
     @Override
     public void render(Tweet tweet) {
-        textContent.setText(tweet.text);
-        textAuthor.setText(tweet.user.name);
+        showContentText(tweet);
         showUserName(tweet);
         showTimestamp(tweet.createdAt);
         showUserPhoto(tweet);
@@ -78,6 +84,13 @@ public class TweetHolder extends AbstractHolder {
         if (Util.isContainsVideo(tweet)) {
             Log.e(TAG, "Video contains: true");
         }
+    }
+
+    public void showContentText(Tweet tweet) {
+        CharSequence tweetText = Util.getLinkifiedText(tweet, colorTweetLink, colorTweetHash, colorTweetMention);
+        textContent.setMovementMethod(LinkMovementMethod.getInstance());
+        textContent.setFocusable(false);
+        textContent.setText(tweetText);
     }
 
     /**

@@ -1,10 +1,16 @@
 package com.vgarshyn.twittasteroid.core;
 
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 
+import com.twitter.sdk.android.core.models.HashtagEntity;
 import com.twitter.sdk.android.core.models.MediaEntity;
+import com.twitter.sdk.android.core.models.MentionEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.models.UrlEntity;
+import com.vgarshyn.twittasteroid.core.ui.ClickableUrlSpan;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +24,8 @@ public final class Util {
     private static final double DEFAULT_ASPECT_RATIO = 16.0 / 9.0;
     private static final String PHOTO_TYPE = "photo";
     private static final String EMPTY_STRING = "";
+    private static final String END_TRUNCATED_LINK = "…";
+    private static final String HTTP_TEXT = "http";
 
     private static final SimpleDateFormat TWITTER_TIMESTAMP = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -100,11 +108,11 @@ public final class Util {
      */
     public static boolean isContainsVideo(Tweet tweet) {
         if (tweet.entities != null) {
-            List<UrlEntity> mediaEntityList = tweet.entities.urls;
-            if (mediaEntityList != null && !mediaEntityList.isEmpty()) {
+            List<UrlEntity> urlEntities = tweet.entities.urls;
+            if (urlEntities != null && !urlEntities.isEmpty()) {
                 UrlEntity entity;
-                for (int i = mediaEntityList.size() - 1; i >= 0; i--) {
-                    entity = mediaEntityList.get(i);
+                for (int i = urlEntities.size() - 1; i >= 0; i--) {
+                    entity = urlEntities.get(i);
                     return !TextUtils.isEmpty(entity.expandedUrl) && entity.expandedUrl.startsWith("https://amp.twimg.com");
                 }
             }
@@ -112,6 +120,12 @@ public final class Util {
         return false;
     }
 
+    /**
+     * Format twitter timestamp into user readable date
+     *
+     * @param apiTime
+     * @return
+     */
     public static String formatDate(String apiTime) {
         if (apiTime == null) {
             return EMPTY_STRING;
@@ -124,4 +138,73 @@ public final class Util {
         }
     }
 
+    public static CharSequence getLinkifiedText(Tweet tweet, int colorLink, int colorHashTag, int colorMention) {
+        String text = tweet.text;
+        if (tweet.entities != null) {
+
+            List<MediaEntity> mediaEntityList = tweet.entities.media;
+            if (mediaEntityList != null && !mediaEntityList.isEmpty()) {
+                MediaEntity entity;
+                for (int i = mediaEntityList.size() - 1; i >= 0; i--) {
+                    entity = mediaEntityList.get(i);
+                    if (entity.type != null && entity.type.equals(PHOTO_TYPE)) {
+                        text = text.replace(entity.url, "");
+                    }
+                }
+            }
+
+            if (text.trim().endsWith(END_TRUNCATED_LINK)) {
+                int lastindex = text.lastIndexOf(HTTP_TEXT);
+                if (lastindex > 0) {
+                    text = text.substring(0, lastindex);
+                }
+            }
+
+            SpannableString spannableString = new SpannableString(text);
+
+            List<UrlEntity> urlEntities = tweet.entities.urls;
+
+            if (urlEntities != null && !urlEntities.isEmpty()) {
+                for (UrlEntity entity : urlEntities) {
+                    String url = entity.url;
+                    if (text.contains(url)) {
+                        int start = text.indexOf(url);
+                        int end = start + url.length();
+                        spannableString.setSpan(new ForegroundColorSpan(colorLink), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannableString.setSpan(new ClickableUrlSpan(entity.expandedUrl), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+
+            List<HashtagEntity> hashEntities = tweet.entities.hashtags;
+
+            if (hashEntities != null && !hashEntities.isEmpty()) {
+                for (HashtagEntity entity : hashEntities) {
+                    String tag = "#" + entity.text;
+                    if (text.contains(tag)) {
+                        int start = text.indexOf(tag);
+                        int end = start + tag.length();
+                        spannableString.setSpan(new ForegroundColorSpan(colorHashTag), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+
+
+            List<MentionEntity> mentionEntities = tweet.entities.userMentions;
+
+            if (mentionEntities != null && !mentionEntities.isEmpty()) {
+                for (MentionEntity entity : mentionEntities) {
+                    String screenName = "@" + entity.screenName;
+                    if (text.contains(screenName)) {
+                        int start = text.indexOf(screenName);
+                        int end = start + screenName.length();
+                        spannableString.setSpan(new ForegroundColorSpan(colorMention), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                }
+            }
+
+            return spannableString;
+        }
+        return text;
+    }
 }

@@ -3,5 +3,8 @@
     <color name="splash_screen_background">#28AAE1</color>
     <color name="tweet_fullname">@color/material_blue_grey_800</color>
     <color name="tweet_username">@color/tw__medium_gray</color>
+    <color name="tweet_link">#ff3273a6</color>
+    <color name="tweet_hashtag">#ff2c2019</color>
+    <color name="tweet_mention">#ff22496c</color>
     <color name="tweet_item_background">#fffefefe</color>
 </resources>
