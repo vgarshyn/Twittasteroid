@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.models.Coordinates;
 import com.twitter.sdk.android.core.models.MediaEntity;
@@ -33,6 +34,7 @@ import com.vgarshyn.twittasteroid.core.Util;
  */
 public class TweetHolder extends AbstractHolder {
     private static final String TAG = TweetHolder.class.getSimpleName();
+
     final int colorFullname;
     final int colorUsername;
     final int colorTweetLink;
@@ -43,7 +45,10 @@ public class TweetHolder extends AbstractHolder {
     TextView textTime;
     ImageView imageUser;
     AspectRatioImageView imageTweetPhoto;
+    ImageView imageVideoPreview;
     View geopointView;
+    View videoContainer;
+    View videoPreviewOverlay;
     Context context;
 
     TweetHolder(View view) {
@@ -55,6 +60,9 @@ public class TweetHolder extends AbstractHolder {
         imageUser = (ImageView) view.findViewById(R.id.image_user_profile);
         imageTweetPhoto = (AspectRatioImageView) view.findViewById(R.id.image_tweet_photo);
         geopointView = view.findViewById(R.id.ic_geopoint);
+        imageVideoPreview = (ImageView) view.findViewById(R.id.image_video_preview);
+        videoContainer = view.findViewById(R.id.video_preview_container);
+        videoPreviewOverlay = view.findViewById(R.id.image_video_preview_overlay);
 
         colorFullname = context.getResources().getColor(R.color.tweet_fullname);
         colorUsername = context.getResources().getColor(R.color.tweet_username);
@@ -86,9 +94,7 @@ public class TweetHolder extends AbstractHolder {
         showTimestamp(tweet.createdAt);
         showUserPhoto(tweet);
         showTweetPhoto(tweet);
-        if (Util.isContainsVideo(tweet)) {
-            Log.e(TAG, "Video contains: true");
-        }
+        showYoutubeVideo(tweet);
         showGeoPointIcon(tweet);
     }
 
@@ -200,6 +206,40 @@ public class TweetHolder extends AbstractHolder {
             textTime.setVisibility(View.VISIBLE);
         } else {
             textTime.setVisibility(View.GONE);
+        }
+    }
+
+    public void showYoutubeVideo(Tweet tweet) {
+        clearMediaBackground();
+        if (Util.isContainsYoutubeVideo(tweet)) {
+            videoContainer.setVisibility(View.VISIBLE);
+            String youtubeUrl = Util.getYoutubeVideoUrl(tweet);
+            String youtubeId = Util.extractYoutubeVideoId(youtubeUrl);
+            if (!Util.isEmpty(youtubeUrl, youtubeId)) {
+                Log.e(TAG, "Video contains: true");
+                String previewUrl = Util.getYoutubePreviewUrl(youtubeId);
+                imageVideoPreview.setVisibility(ImageView.VISIBLE);
+
+                Picasso.with(context)
+                        .load(previewUrl)
+                        .placeholder(R.drawable.play_overlay_icon)
+                        .fit()
+                        .into(imageVideoPreview, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                videoPreviewOverlay.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                videoContainer.setVisibility(View.GONE);
+                            }
+                        });
+            }
+        } else {
+            videoPreviewOverlay.setVisibility(View.GONE);
+            imageVideoPreview.setVisibility(ImageView.GONE);
+            videoContainer.setVisibility(View.GONE);
         }
     }
 
