@@ -1,5 +1,8 @@
 package com.vgarshyn.twittasteroid.core;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -12,6 +15,7 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.models.UrlEntity;
 import com.vgarshyn.twittasteroid.core.ui.ClickableUrlSpan;
 
+import java.net.InetAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -138,6 +142,15 @@ public final class Util {
         }
     }
 
+    /**
+     * Render tweet text into spannable string with links, marked hashtags and user mentions.
+     *
+     * @param tweet
+     * @param colorLink
+     * @param colorHashTag
+     * @param colorMention
+     * @return
+     */
     public static CharSequence getLinkifiedText(Tweet tweet, int colorLink, int colorHashTag, int colorMention) {
         String text = tweet.text;
         if (tweet.entities != null) {
@@ -206,5 +219,32 @@ public final class Util {
             return spannableString;
         }
         return text;
+    }
+
+    /**
+     * Check is network available
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    /**
+     * There is a possibility device connected to network but have not internet connection.
+     * This method check it.
+     *
+     * @return
+     */
+    public static boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("twitter.com");
+            return !ipAddr.equals(EMPTY_STRING);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

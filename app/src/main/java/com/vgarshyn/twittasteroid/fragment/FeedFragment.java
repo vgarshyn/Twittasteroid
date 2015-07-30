@@ -51,6 +51,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             String action = intent.getAction();
             if (TweetIntentService.ACTION_REFRESH_COMPLETED.equals(action)) {
                 if (intent.hasExtra(TweetIntentService.EXTRA_ERROR)) {
+                    cancelRefresh();
                     Toast.makeText(getActivity(), intent.getStringExtra(TweetIntentService.EXTRA_ERROR), Toast.LENGTH_LONG).show();
                 } else {
                     getLoaderManager().initLoader(LOADER_ID_REFRESH, null, FeedFragment.this);

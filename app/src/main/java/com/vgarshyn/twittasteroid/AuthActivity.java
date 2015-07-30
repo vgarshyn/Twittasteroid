@@ -66,6 +66,10 @@ public class AuthActivity extends Activity {
             }
         });
         mImageLogo = (ImageView) findViewById(R.id.icon_logo);
+        if (!Util.isNetworkAvailable(this)) {
+            mLoginButton.setEnabled(false);
+            Toast.makeText(this, R.string.error_network_unavailable, Toast.LENGTH_LONG).show();
+        }
     }
 
     private boolean isAuthSessionPresent() {

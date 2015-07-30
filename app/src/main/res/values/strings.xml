@@ -7,4 +7,6 @@
     <string name="action_logout">Logout</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="title_activity_photo_view">PhotoViewActivity</string>
+
+    <string name="error_network_unavailable">Network unavailable :(\nPlease check your connection before using app.</string>
 </resources>
