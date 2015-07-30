@@ -19,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.twitter.sdk.android.core.models.Coordinates;
 import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
+import com.vgarshyn.twittasteroid.MapActivity;
 import com.vgarshyn.twittasteroid.PhotoViewActivity;
 import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.core.Util;
@@ -41,6 +43,7 @@ public class TweetHolder extends AbstractHolder {
     TextView textTime;
     ImageView imageUser;
     AspectRatioImageView imageTweetPhoto;
+    View geopointView;
     Context context;
 
     TweetHolder(View view) {
@@ -51,6 +54,8 @@ public class TweetHolder extends AbstractHolder {
         textTime = (TextView) view.findViewById(R.id.text_time);
         imageUser = (ImageView) view.findViewById(R.id.image_user_profile);
         imageTweetPhoto = (AspectRatioImageView) view.findViewById(R.id.image_tweet_photo);
+        geopointView = view.findViewById(R.id.ic_geopoint);
+
         colorFullname = context.getResources().getColor(R.color.tweet_fullname);
         colorUsername = context.getResources().getColor(R.color.tweet_username);
         colorTweetLink = context.getResources().getColor(R.color.tweet_link);
@@ -83,6 +88,28 @@ public class TweetHolder extends AbstractHolder {
         showTweetPhoto(tweet);
         if (Util.isContainsVideo(tweet)) {
             Log.e(TAG, "Video contains: true");
+        }
+        showGeoPointIcon(tweet);
+    }
+
+    private void showGeoPointIcon(final Tweet tweet) {
+        if (tweet.coordinates != null) {
+            geopointView.setVisibility(View.VISIBLE);
+            geopointView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Coordinates coordinates = tweet.coordinates;
+                    Intent intent = new Intent(context, MapActivity.class);
+                    intent.putExtra(MapActivity.EXTRA_LATITUDE, coordinates.getLatitude());
+                    intent.putExtra(MapActivity.EXTRA_LONGITUDE, coordinates.getLongitude());
+                    intent.putExtra(MapActivity.EXTRA_USERNAME, "@" + tweet.user.name);
+                    intent.putExtra(MapActivity.EXTRA_TEXT, tweet.text);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });
+        } else {
+            geopointView.setVisibility(View.GONE);
         }
     }
 

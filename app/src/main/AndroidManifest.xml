@@ -6,6 +6,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!--
+ The ACCESS_COARSE/FINE_LOCATION permissions are not required to use Google Maps Android API v2, but are recommended.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".TwittApplication"
@@ -13,7 +19,21 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fb81e22cf23dd13873520962f20266d3637a5307" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name="com.twitter.sdk.android.core.identity.OAuthActivity" />
+
         <activity
             android:name=".AuthActivity"
             android:label="@string/app_name">
@@ -28,14 +48,15 @@
             android:label="@string/app_name">
         </activity>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="fb81e22cf23dd13873520962f20266d3637a5307" />
-
         <activity
             android:name=".PhotoViewActivity"
             android:label="@string/title_activity_photo_view" />
+
         <activity android:name="net.rdrei.android.dirchooser.DirectoryChooserActivity" />
+
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/app_name" />
 
         <service
             android:name=".core.TweetIntentService"
