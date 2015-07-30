@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -132,8 +133,10 @@ public class PhotoViewActivity extends AppCompatActivity {
                     FileOutputStream ostream = new FileOutputStream(file);
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
                     ostream.close();
+                    Toast.makeText(getApplicationContext(), R.string.message_image_saved, Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), R.string.error_image_saving, Toast.LENGTH_LONG).show();
                 }
             }
 

@@ -8,5 +8,8 @@
     <string name="title_activity_auth">AuthActivity</string>
     <string name="title_activity_photo_view">PhotoViewActivity</string>
 
+    <string name="message_image_saved">Image saved successfully in chosen directory</string>
+
     <string name="error_network_unavailable">Network unavailable :(\nPlease check your connection before using app.</string>
+    <string name="error_image_saving">Unable to save image... ^( \n Weird error happened.</string>
 </resources>
