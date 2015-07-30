@@ -16,6 +16,8 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.StatusesService;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetColumns;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetContentValues;
+import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetCursor;
+import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetSelection;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class TweetIntentService extends IntentService {
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_REFRESH = "twittasteroid.action.REFRESH";
     public static final String ACTION_REFRESH_COMPLETED = "twittasteroid.action.CANCEL_REFRESH";
+    public static final String ACTION_REFRESH_COMPLETED_WITOUT_UPDATE = "twittasteroid.action.CANCEL_REFRESH_COMPLETED_WITHOUT_UPDATE";
     public static final String ACTION_LOAD_MORE = "twittasteroid.action.LOAD_MORE";
     public static final String ACTION_LOAD_MORE_COMPLETED = "twittasteroid.action.LOAD_MORE_COMPLETED";
     public static final String EXTRA_ERROR = "twittasteroid.extra.PARAM_ERROR";
@@ -79,8 +82,12 @@ public class TweetIntentService extends IntentService {
                     @Override
                     public void success(Result<List<Tweet>> result) {
                         List<Tweet> data = result.data;
-                        storeData(data);
-                        refreshCompleted(null);
+                        if (isNeedUpdateData(data)) {
+                            storeData(data);
+                            refreshCompleted(null);
+                        } else {
+                            refreshCompletedWithoutUpdate();
+                        }
                     }
 
                     @Override
@@ -89,6 +96,23 @@ public class TweetIntentService extends IntentService {
                     }
                 }
         );
+    }
+
+    private boolean isNeedUpdateData(List<Tweet> data) {
+        if (data != null && data.size() > 0) {
+            long maxid = data.get(data.size() - 1).getId();
+            TweetSelection selection = new TweetSelection().orderById(true).limit(1);
+            TweetCursor cursor = selection.query(getContentResolver());
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                long id = cursor.getTweetId();
+                return maxid != id;
+            } else {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     private void storeData(List<Tweet> data) {
@@ -110,6 +134,11 @@ public class TweetIntentService extends IntentService {
         if (!TextUtils.isEmpty(errorMessage)) {
             intent.putExtra(EXTRA_ERROR, errorMessage);
         }
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void refreshCompletedWithoutUpdate() {
+        Intent intent = new Intent(ACTION_REFRESH_COMPLETED_WITOUT_UPDATE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

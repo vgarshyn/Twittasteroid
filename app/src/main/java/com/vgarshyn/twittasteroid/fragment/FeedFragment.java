@@ -13,7 +13,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +55,9 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 } else {
                     getLoaderManager().initLoader(LOADER_ID_REFRESH, null, FeedFragment.this);
                 }
+            }
+            if (TweetIntentService.ACTION_REFRESH_COMPLETED_WITOUT_UPDATE.equals(action)) {
+                cancelRefresh();
             } else if (TweetIntentService.ACTION_LOAD_MORE_COMPLETED.equals(action)) {
                 if (intent.hasExtra(TweetIntentService.EXTRA_ERROR)) {
                     Toast.makeText(getActivity(), intent.getStringExtra(TweetIntentService.EXTRA_ERROR), Toast.LENGTH_LONG).show();
@@ -74,6 +76,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void registerReceivers(Context context) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(TweetIntentService.ACTION_REFRESH_COMPLETED);
+        filter.addAction(TweetIntentService.ACTION_REFRESH_COMPLETED_WITOUT_UPDATE);
         filter.addAction(TweetIntentService.ACTION_LOAD_MORE_COMPLETED);
         LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver, filter);
     }
@@ -97,7 +100,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onLoadMore(int currentPage) {
                 setExternalLoadingFlag(true);
-                loadTweets(mFeedAdapter.getLastTweetId());
+                loadMoreTweets(mFeedAdapter.getLastTweetId());
             }
         };
     }
@@ -112,7 +115,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mRecyclerView.setAdapter(mFeedAdapter);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addOnScrollListener(mEndlessScrollListener);
-        getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
+
+        initFeedAndLoadFresh();
     }
 
     @Override
@@ -127,34 +131,33 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onPause();
     }
 
-    public void loadTweets(Long lastid) {
-        mFeedAdapter.showProgressBarFooter();
-        Log.e(TAG, "Load tweets");
-        TweetIntentService.startActionLoadMore(getActivity(), lastid);
-  /*      final StatusesService service = Twitter.getInstance().getApiClient().getStatusesService();
-        Long lastId = lastid == 0 ? null : lastid;
-        service.homeTimeline(50, null, lastId, null, null, null, null, new Callback<List<Tweet>>() {
-                    @Override
-                    public void success(Result<List<Tweet>> result) {
-
-                        List<Tweet> data = result.data;
-                        if (data != null && data.size() > 0) {
-                            mFeedAdapter.updateDataSet(data);
-                            mLastId = data.get(data.size() - 1).getId();
-                        }
-                        cancelRefresh();
-                    }
-
-                    @Override
-                    public void failure(TwitterException error) {
-                        Toast.makeText(getActivity(), "Failed to retrieve timeline",
-                                Toast.LENGTH_SHORT).show();
-                        cancelRefresh();
-                    }
-                }
-        );*/
+    /**
+     * Call on app start. Show old tweets from DB and simultaneously load new data and refresh all when complete.
+     */
+    private void initFeedAndLoadFresh() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                TweetIntentService.startActionRefresh(getActivity());
+            }
+        });
+        getLoaderManager().initLoader(LOADER_ID_LOAD_MORE, null, this);
     }
 
+    /**
+     * Infinite tweets pagination
+     *
+     * @param lastid
+     */
+    private void loadMoreTweets(Long lastid) {
+        mFeedAdapter.showProgressBarFooter();
+        TweetIntentService.startActionLoadMore(getActivity(), lastid);
+    }
+
+    /**
+     * Hide pull to refresh progress bar
+     */
     private void cancelRefresh() {
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
