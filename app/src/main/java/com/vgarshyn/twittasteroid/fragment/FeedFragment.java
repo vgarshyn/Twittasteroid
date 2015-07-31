@@ -195,12 +195,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             case LOADER_ID_REFRESH:
                 cancelRefresh();
                 mFeedAdapter.refreshDataSet(data);
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mFeedAdapter.notifyDataSetChanged();
-                    }
-                }, 500);
                 break;
             case LOADER_ID_LOAD_MORE:
                 mFeedAdapter.hideProgressBarFooter();
