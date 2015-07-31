@@ -14,7 +14,6 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.StatusesService;
-import com.vgarshyn.twittasteroid.contentprovider.TweetContentProvider;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetColumns;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetContentValues;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetCursor;
@@ -100,8 +99,9 @@ public class TweetIntentService extends IntentService {
     }
 
     private void handleActionTruncate() {
+        TweetSelection selection = new TweetSelection().orderById();
+        selection.delete(getContentResolver());
         notifyForceRefresh();
-        getContentResolver().delete(TweetColumns.CONTENT_URI, TweetContentProvider.TRUNCATE_COMMAND, null);
     }
 
     private void handleActionRefresh() {
@@ -131,9 +131,11 @@ public class TweetIntentService extends IntentService {
             long maxid = data.get(data.size() - 1).getId();
             TweetSelection selection = new TweetSelection().orderById(true).limit(1);
             TweetCursor cursor = selection.query(getContentResolver());
+
             if (cursor != null && cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 long id = cursor.getTweetId();
+                cursor.close();
                 return maxid != id;
             } else {
                 return true;
