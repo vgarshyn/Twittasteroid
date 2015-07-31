@@ -15,4 +15,7 @@
     <string name="error_image_saving">Unable to save image... ^( \n Weird error happened.</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
+    <string name="menu_logout">logout</string>
+    <string name="menu_invalidate_cache">invalidate_cache</string>
+
 </resources>

@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
  * Created by v.garshyn on 23.07.15.
  */
 public final class Util {
+    public static final String EMPTY_STRING = "";
     private static final double DEFAULT_ASPECT_RATIO = 16.0 / 9.0;
     private static final String PHOTO_TYPE = "photo";
-    private static final String EMPTY_STRING = "";
     private static final String END_TRUNCATED_LINK = "…";
     private static final String HTTP_TEXT = "http";
 
