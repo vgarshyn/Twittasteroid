@@ -14,6 +14,7 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.StatusesService;
+import com.vgarshyn.twittasteroid.contentprovider.TweetContentProvider;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetColumns;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetContentValues;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetCursor;
@@ -34,6 +35,8 @@ public class TweetIntentService extends IntentService {
     public static final String ACTION_REFRESH_COMPLETED_WITOUT_UPDATE = "twittasteroid.action.CANCEL_REFRESH_COMPLETED_WITHOUT_UPDATE";
     public static final String ACTION_LOAD_MORE = "twittasteroid.action.LOAD_MORE";
     public static final String ACTION_LOAD_MORE_COMPLETED = "twittasteroid.action.LOAD_MORE_COMPLETED";
+    public static final String ACTION_TRUNCATE = "twittasteroid.action.TRUNCATE";
+    public static final String ACTION_FORCE_REFRESH = "twittasteroid.action.FORCE_REFRESH";
     public static final String EXTRA_ERROR = "twittasteroid.extra.PARAM_ERROR";
     public static final String EXTRA_MAX_ID = "twittasteroid.extra.PARAM_MAX_ID";
     private static final String TAG = TweetIntentService.class.getSimpleName();
@@ -67,6 +70,17 @@ public class TweetIntentService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * Start remove old stored data and load new.
+     *
+     * @param context
+     */
+    public static void startActionTruncate(Context context) {
+        Intent intent = new Intent(context, TweetIntentService.class);
+        intent.setAction(ACTION_TRUNCATE);
+        context.startService(intent);
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -79,8 +93,15 @@ public class TweetIntentService extends IntentService {
                     maxId = intent.getLongExtra(EXTRA_MAX_ID, 0);
                 }
                 handleActionLoadMore(maxId);
+            } else if (ACTION_TRUNCATE.equals(action)) {
+                handleActionTruncate();
             }
         }
+    }
+
+    private void handleActionTruncate() {
+        notifyForceRefresh();
+        getContentResolver().delete(TweetColumns.CONTENT_URI, TweetContentProvider.TRUNCATE_COMMAND, null);
     }
 
     private void handleActionRefresh() {
@@ -146,6 +167,11 @@ public class TweetIntentService extends IntentService {
 
     private void refreshCompletedWithoutUpdate() {
         Intent intent = new Intent(ACTION_REFRESH_COMPLETED_WITOUT_UPDATE);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void notifyForceRefresh() {
+        Intent intent = new Intent(ACTION_FORCE_REFRESH);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

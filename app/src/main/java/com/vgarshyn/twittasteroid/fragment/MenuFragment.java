@@ -2,12 +2,14 @@ package com.vgarshyn.twittasteroid.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,8 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 import com.vgarshyn.twittasteroid.R;
+import com.vgarshyn.twittasteroid.activity.AuthActivity;
+import com.vgarshyn.twittasteroid.core.TweetIntentService;
 import com.vgarshyn.twittasteroid.core.UserPreferences;
 import com.vgarshyn.twittasteroid.core.Util;
 
@@ -33,6 +37,8 @@ public class MenuFragment extends Fragment implements SharedPreferences.OnShared
     private ImageView mUserAvatar;
     private TextView mUserName;
     private TextView mScreenName;
+    private Button mBtnInvalidateCache;
+    private Button mBtnLogout;
 
     private UserPreferences preferences;
 
@@ -53,6 +59,8 @@ public class MenuFragment extends Fragment implements SharedPreferences.OnShared
         mUserAvatar = (ImageView) view.findViewById(R.id.user_avatar);
         mUserName = (TextView) view.findViewById(R.id.text_user_name);
         mScreenName = (TextView) view.findViewById(R.id.text_screen_name);
+        mBtnInvalidateCache = (Button) view.findViewById(R.id.btn_invalidate_cache);
+        mBtnLogout = (Button) view.findViewById(R.id.btn_menu_logout);
     }
 
     @Override
@@ -64,6 +72,20 @@ public class MenuFragment extends Fragment implements SharedPreferences.OnShared
         if (Util.isNetworkAvailable(getActivity())) {
             getUserInfo();
         }
+
+        mBtnInvalidateCache.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TweetIntentService.startActionTruncate(getActivity());
+            }
+        });
+
+        mBtnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
     }
 
     @Override
@@ -118,5 +140,14 @@ public class MenuFragment extends Fragment implements SharedPreferences.OnShared
         mUserName.setText("@" + preferences.getUserName());
         mScreenName.setText(preferences.getScreenName());
 
+    }
+
+    private void logout() {
+        if (getActivity() != null) {
+            Twitter.logOut();
+            Intent intent = new Intent(getActivity(), AuthActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+        }
     }
 }

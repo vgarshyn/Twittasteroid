@@ -19,6 +19,7 @@ import java.util.Arrays;
  * Created by v.garshyn on 26.07.15.
  */
 public class TweetContentProvider extends BaseContentProvider {
+    public static final String TRUNCATE_COMMAND = "truncate";
     public static final String AUTHORITY = "com.twittasteroid";
     public static final String CONTENT_URI_BASE = "content://" + AUTHORITY;
     private static final String TAG = TweetContentProvider.class.getSimpleName();
@@ -82,6 +83,15 @@ public class TweetContentProvider extends BaseContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         if (DEBUG)
             Log.d(TAG, "delete uri=" + uri + " selection=" + selection + " selectionArgs=" + Arrays.toString(selectionArgs));
+        if (TRUNCATE_COMMAND.equals(selection)) {
+            try {
+                mSqLiteOpenHelper.getWritableDatabase().delete(TweetColumns.TABLE_NAME, null, null);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return super.delete(uri, selection, selectionArgs);
     }
 

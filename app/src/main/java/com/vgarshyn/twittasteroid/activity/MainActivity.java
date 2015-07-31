@@ -1,6 +1,5 @@
 package com.vgarshyn.twittasteroid.activity;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -8,12 +7,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.twitter.sdk.android.Twitter;
 import com.vgarshyn.twittasteroid.R;
 
 /**
  * Main activity with twitter feed and side menu
- * <p/>
+ *
  * Created by v.garshyn on 23.07.15.
  */
 public class MainActivity extends AppCompatActivity {
@@ -64,11 +62,4 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-
-    private void logout() {
-        Twitter.logOut();
-        Intent intent = new Intent(this, AuthActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }

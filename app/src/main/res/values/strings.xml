@@ -10,12 +10,13 @@
     <string name="title_activity_youtube_video">Youtube Video Activity</string>
 
     <string name="message_image_saved">Image saved successfully in chosen directory</string>
+    <string name="message_data_invalidated">Data was invalidated</string>
 
     <string name="error_network_unavailable">Network unavailable :(\nPlease check your connection before using app.</string>
     <string name="error_image_saving">Unable to save image... ^( \n Weird error happened.</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
     <string name="menu_logout">logout</string>
-    <string name="menu_invalidate_cache">invalidate_cache</string>
+    <string name="menu_invalidate_cache">invalidate cache</string>
 
 </resources>

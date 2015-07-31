@@ -25,6 +25,7 @@ import com.vgarshyn.twittasteroid.core.TweetDataLoader;
 import com.vgarshyn.twittasteroid.core.TweetIntentService;
 import com.vgarshyn.twittasteroid.core.ui.EndlessScrollListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,6 +71,9 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     }
                     getLoaderManager().restartLoader(LOADER_ID_LOAD_MORE, bundle, FeedFragment.this);
                 }
+            } else if (TweetIntentService.ACTION_FORCE_REFRESH.equals(action)) {
+                Toast.makeText(getActivity(), R.string.message_data_invalidated, Toast.LENGTH_LONG).show();
+                mFeedAdapter.refreshDataSet(new ArrayList<Tweet>(0));
             }
 
         }
@@ -80,6 +84,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         filter.addAction(TweetIntentService.ACTION_REFRESH_COMPLETED);
         filter.addAction(TweetIntentService.ACTION_REFRESH_COMPLETED_WITOUT_UPDATE);
         filter.addAction(TweetIntentService.ACTION_LOAD_MORE_COMPLETED);
+        filter.addAction(TweetIntentService.ACTION_FORCE_REFRESH);
         LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver, filter);
     }
 
