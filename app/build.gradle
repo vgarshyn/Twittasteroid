@@ -27,8 +27,24 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        googleApiEnable {
+            storeFile file('../keystore/custom.keystore')
+            storePassword 'android'
+            keyAlias 'androidgoogleapikey'
+            keyPassword 'android'
+        }
+    }
+
     buildTypes {
+
+        debug {
+            signingConfig signingConfigs.googleApiEnable
+        }
+
         release {
+            signingConfig signingConfigs.googleApiEnable
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
