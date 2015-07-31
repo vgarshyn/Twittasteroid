@@ -19,6 +19,11 @@ import com.vgarshyn.twittasteroid.R;
 import com.vgarshyn.twittasteroid.core.Util;
 import com.vgarshyn.twittasteroid.core.ui.LogoAnimation;
 
+/**
+ * Login activity
+ * <p/>
+ * Created by v.garshyn on 24.07.15.
+ */
 public class AuthActivity extends Activity {
     private static final String TAG = AuthActivity.class.getSimpleName();
 

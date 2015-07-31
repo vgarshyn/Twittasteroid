@@ -31,6 +31,8 @@ import com.vgarshyn.twittasteroid.activity.YoutubeVideoActivity;
 import com.vgarshyn.twittasteroid.core.Util;
 
 /**
+ * Main Ui holder of tweet item
+ *
  * Created by v.garshyn on 26.07.15.
  */
 public class TweetHolder extends AbstractHolder {
@@ -99,6 +101,11 @@ public class TweetHolder extends AbstractHolder {
         showGeoPointIcon(tweet);
     }
 
+    /**
+     * Display coordinates icon
+     *
+     * @param tweet
+     */
     private void showGeoPointIcon(final Tweet tweet) {
         if (tweet.coordinates != null) {
             geopointView.setVisibility(View.VISIBLE);

@@ -6,6 +6,9 @@ import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetCursor;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetSelection;
 
 /**
+ * Loader to represent cursor given from content provider into
+ * tweet collection
+ *
  * Created by v.garshyn on 27.07.15.
  */
 public class TweetDataLoader extends AbstractTweetLoader {

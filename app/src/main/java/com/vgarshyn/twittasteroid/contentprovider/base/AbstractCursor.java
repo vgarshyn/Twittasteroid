@@ -6,6 +6,11 @@ import android.database.CursorWrapper;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * Useful cursor wrapper
+ * <p/>
+ * Created by v.garshyn on 26.07.15.
+ */
 public abstract class AbstractCursor extends CursorWrapper {
     private final HashMap<String, Integer> mColumnIndexes;
 

@@ -24,6 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Utility class with useful methods
+ *
  * Created by v.garshyn on 23.07.15.
  */
 public final class Util {

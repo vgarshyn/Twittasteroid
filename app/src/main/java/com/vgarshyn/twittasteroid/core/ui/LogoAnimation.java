@@ -7,6 +7,8 @@ import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
 
 /**
+ * Animation for scale logo after login
+ *
  * Created by v.garshyn on 28.07.2015.
  */
 public class LogoAnimation extends AnimationSet {

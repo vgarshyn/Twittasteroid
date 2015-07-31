@@ -11,7 +11,11 @@ import android.view.MenuItem;
 import com.twitter.sdk.android.Twitter;
 import com.vgarshyn.twittasteroid.R;
 
-
+/**
+ * Main activity with twitter feed and side menu
+ * <p/>
+ * Created by v.garshyn on 23.07.15.
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 

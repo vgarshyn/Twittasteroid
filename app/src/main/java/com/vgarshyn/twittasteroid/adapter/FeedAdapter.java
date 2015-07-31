@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Adapter for represent feed in RecylerView
+ *
  * Created by v.garshyn on 25.07.15.
  */
 public class FeedAdapter extends RecyclerView.Adapter<AbstractHolder> {

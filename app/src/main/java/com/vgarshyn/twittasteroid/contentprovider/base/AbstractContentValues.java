@@ -5,6 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
+/**
+ * Helper to wrap ContentValues
+ * <p/>
+ * Created by v.garshyn on 26.07.15.
+ */
 public abstract class AbstractContentValues {
     protected final ContentValues mContentValues = new ContentValues();
 
@@ -23,7 +28,7 @@ public abstract class AbstractContentValues {
     /**
      * Inserts a row into a table using the values stored by this object.
      *
-     * @param contentResolver The content resolver to use.
+     * @param contentResolver
      */
     public Uri insert(ContentResolver contentResolver) {
         return contentResolver.insert(uri(), values());
@@ -32,7 +37,7 @@ public abstract class AbstractContentValues {
     /**
      * Inserts a row into a table using the values stored by this object.
      *
-     * @param context The context to use.
+     * @param context
      */
     public Uri insert(Context context) {
         return context.getContentResolver().insert(uri(), values());

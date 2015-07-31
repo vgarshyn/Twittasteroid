@@ -8,7 +8,9 @@ import android.net.Uri;
 import com.vgarshyn.twittasteroid.contentprovider.base.AbstractSelection;
 
 /**
- * Selection for the {@code tweet} table.
+ * Helper selection for the {@code tweet} table.
+ *
+ * Created by v.garshyn on 26.07.15.
  */
 public class TweetSelection extends AbstractSelection<TweetSelection> {
     @Override

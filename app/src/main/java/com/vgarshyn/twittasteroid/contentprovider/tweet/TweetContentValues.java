@@ -9,6 +9,8 @@ import com.vgarshyn.twittasteroid.contentprovider.base.AbstractContentValues;
 
 /**
  * Content values wrapper for the {@code tweet} table.
+ *
+ * Created by v.garshyn on 26.07.15.
  */
 public class TweetContentValues extends AbstractContentValues {
     @Override

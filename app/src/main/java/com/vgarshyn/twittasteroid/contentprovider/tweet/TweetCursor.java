@@ -9,6 +9,8 @@ import com.vgarshyn.twittasteroid.contentprovider.base.AbstractCursor;
 
 /**
  * Cursor wrapper for the {@code tweet} table.
+ *
+ * Created by v.garshyn on 26.07.15.
  */
 public class TweetCursor extends AbstractCursor implements TweetModel {
     public TweetCursor(Cursor cursor) {
@@ -37,7 +39,6 @@ public class TweetCursor extends AbstractCursor implements TweetModel {
 
     /**
      * Get the {@code created_at} value.
-     * Can be {@code null}.
      */
     @Nullable
     public String getCreatedAt() {
@@ -47,7 +48,6 @@ public class TweetCursor extends AbstractCursor implements TweetModel {
 
     /**
      * Get the {@code original_json} value.
-     * Can be {@code null}.
      */
     @Nullable
     public String getOriginalJson() {

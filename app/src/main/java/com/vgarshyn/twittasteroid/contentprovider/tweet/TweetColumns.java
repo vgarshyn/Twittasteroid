@@ -7,6 +7,8 @@ import com.vgarshyn.twittasteroid.contentprovider.TweetContentProvider;
 
 /**
  * Columns for the {@code tweet} table.
+ *
+ * Created by v.garshyn on 26.07.15.
  */
 public class TweetColumns implements BaseColumns {
     public static final String TABLE_NAME = "tweet";

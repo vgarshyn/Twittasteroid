@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 /**
+ * Clickable span to open given Url in default system browser
+ *
  * Created by v.garshyn on 30.07.15.
  */
 public class ClickableUrlSpan extends ClickableSpan {

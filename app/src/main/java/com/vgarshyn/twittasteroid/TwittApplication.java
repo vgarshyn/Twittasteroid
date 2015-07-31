@@ -8,7 +8,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import io.fabric.sdk.android.Fabric;
 
 /**
- * Created by v.garshyn on 23.07.15.
+ * Created by v.garshyn on 24.07.15.
  */
 public class TwittApplication extends Application {
     private static final String TAG = TwittApplication.class.getSimpleName();

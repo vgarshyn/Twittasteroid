@@ -21,9 +21,14 @@ import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetSelection;
 
 import java.util.List;
 
+/**
+ * Service to dispatch requests to twitter api and
+ * store data into ContentProvider
+ * <p/>
+ * Created by v.garshyn on 26.07.15.
+ */
 public class TweetIntentService extends IntentService {
     public static final int REQUEST_TWEET_COUNT = 50;
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_REFRESH = "twittasteroid.action.REFRESH";
     public static final String ACTION_REFRESH_COMPLETED = "twittasteroid.action.CANCEL_REFRESH";
     public static final String ACTION_REFRESH_COMPLETED_WITOUT_UPDATE = "twittasteroid.action.CANCEL_REFRESH_COMPLETED_WITHOUT_UPDATE";
@@ -38,6 +43,10 @@ public class TweetIntentService extends IntentService {
         super("TweetIntentService");
     }
 
+    /**
+     * Starts this service to perform action REFRESH.
+     *
+     */
     public static void startActionRefresh(Context context) {
         Intent intent = new Intent(context, TweetIntentService.class);
         intent.setAction(ACTION_REFRESH);
@@ -45,10 +54,9 @@ public class TweetIntentService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action Baz with the given parameters. If
+     * Starts this service to perform action LOAD_MORE with the given parameters. If
      * the service is already performing a task this action will be queued.
      *
-     * @see IntentService
      */
     public static void startActionLoadMore(Context context, Long maxid) {
         Intent intent = new Intent(context, TweetIntentService.class);
@@ -56,7 +64,6 @@ public class TweetIntentService extends IntentService {
         if (maxid != null) {
             intent.putExtra(EXTRA_MAX_ID, maxid);
         }
-//        intent.putExtra(EXTRA_PARAM2, param2);
         context.startService(intent);
     }
 

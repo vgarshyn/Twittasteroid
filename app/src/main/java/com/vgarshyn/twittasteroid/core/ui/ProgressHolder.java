@@ -9,6 +9,9 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.vgarshyn.twittasteroid.R;
 
 /**
+ * Holder for progressbar of infinite scrolling.
+ * When list reached end and data loads user show this one.
+ *
  * Created by v.garshyn on 29.07.15.
  */
 public class ProgressHolder extends AbstractHolder {

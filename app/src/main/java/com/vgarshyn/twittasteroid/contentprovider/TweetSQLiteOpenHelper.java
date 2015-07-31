@@ -12,6 +12,9 @@ import android.util.Log;
 import com.vgarshyn.twittasteroid.BuildConfig;
 import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetColumns;
 
+/**
+ * Created by v.garshyn on 26.07.15.
+ */
 public class TweetSQLiteOpenHelper extends SQLiteOpenHelper {
     public static final String DATABASE_FILE_NAME = "tweets.db";
     // @formatter:off
@@ -47,9 +50,6 @@ public class TweetSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     public static TweetSQLiteOpenHelper getInstance(Context context) {
-        // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
         if (sInstance == null) {
             sInstance = newInstance(context.getApplicationContext());
         }

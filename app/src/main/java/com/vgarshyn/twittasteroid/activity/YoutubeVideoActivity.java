@@ -10,6 +10,11 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.vgarshyn.twittasteroid.R;
 
+/**
+ * Activity with integrated youtube player.
+ * <p/>
+ * Created by v.garshyn on 30.07.15.
+ */
 public class YoutubeVideoActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
     public static final String EXTRA_YOUTUBE_ID = "twittasteroid.extra.YOUTUBE_ID";
     private static final String TAG = YoutubeVideoActivity.class.getSimpleName();

@@ -23,6 +23,8 @@ import com.vgarshyn.twittasteroid.core.UserPreferences;
 import com.vgarshyn.twittasteroid.core.Util;
 
 /**
+ * Fragment to represent side menu
+ *
  * Created by v.garshyn on 30.07.15.
  */
 public class MenuFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {

@@ -25,6 +25,8 @@ import java.io.FileOutputStream;
 import uk.co.senab.photoview.PhotoView;
 
 /**
+ * Display image and allows to play (zoom, scroll, save...)
+ *
  * Created by v.garshyn on 26.07.15.
  */
 public class PhotoViewActivity extends AppCompatActivity {

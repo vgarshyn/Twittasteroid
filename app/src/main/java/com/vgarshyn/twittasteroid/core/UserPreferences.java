@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 /**
+ * Helper class to store data about loged user into shared preferences
+ *
  * Created by v.garshyn on 30.07.15.
  */
 public class UserPreferences {

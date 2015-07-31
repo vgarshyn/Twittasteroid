@@ -16,6 +16,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Helper useful ContentProvider
+ * <p/>
+ * Created by v.garshyn on 26.07.15.
+ */
 public abstract class BaseContentProvider extends ContentProvider {
     public static final String QUERY_NOTIFY = "QUERY_NOTIFY";
     public static final String QUERY_GROUP_BY = "QUERY_GROUP_BY";
@@ -48,17 +53,11 @@ public abstract class BaseContentProvider extends ContentProvider {
     @Override
     public final boolean onCreate() {
         if (hasDebug()) {
-            // Enable logging of SQL statements as they are executed.
             try {
                 Class<?> sqliteDebugClass = Class.forName("android.database.sqlite.SQLiteDebug");
                 Field field = sqliteDebugClass.getDeclaredField("DEBUG_SQL_STATEMENTS");
                 field.setAccessible(true);
                 field.set(null, true);
-
-                // Uncomment the following block if you also want logging of execution time (more verbose)
-                // field = sqliteDebugClass.getDeclaredField("DEBUG_SQL_TIME");
-                // field.setAccessible(true);
-                // field.set(null, true);
             } catch (Throwable t) {
                 if (hasDebug())
                     Log.w(getClass().getSimpleName(), "Could not enable SQLiteDebug logging", t);

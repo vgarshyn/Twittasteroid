@@ -28,6 +28,8 @@ import com.vgarshyn.twittasteroid.core.ui.EndlessScrollListener;
 import java.util.List;
 
 /**
+ * Fragment to represent twitter feed
+ *
  * Created by v.garshyn on 25.07.15.
  */
 public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<Tweet>> {

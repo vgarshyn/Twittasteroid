@@ -1,9 +1,5 @@
 package com.vgarshyn.twittasteroid.activity;
 
-/**
- * Created by v.garshyn on 30.07.2015.
- */
-
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -14,6 +10,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.vgarshyn.twittasteroid.R;
 
+/**
+ * Google maps activity. Show given point on map
+ * <p/>
+ * Created by v.garshyn on 30.07.15.
+ */
 public class MapActivity extends FragmentActivity {
     public static final String TAG = MapActivity.class.getSimpleName();
     public static final String EXTRA_LATITUDE = "twittasteroid.extra.coord.PARAM_LATITUDE";

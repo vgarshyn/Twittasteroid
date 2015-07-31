@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Helper Loader to dispatch and represent cursor into  tweet collection.
+ * Encapsulate boilerplate loader logic
+ *
  * Created by v.garshyn on 29.07.2015.
  */
 public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
@@ -25,7 +28,9 @@ public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
 
     /**
      * Runs on a worker thread, loading in our data. Delegates the real work to
-     * concrete subclass' buildCursor() method.
+     * concrete subclass queryCursor() method.
+     *
+     * @return
      */
     @Override
     public List<Tweet> loadInBackground() {
@@ -51,12 +56,13 @@ public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
 
     /**
      * Runs on the UI thread, routing the results from the background thread to
-     * whatever is using the dataList.
+     * whatever is using the data collection.
+     *
+     * @param dataList
      */
     @Override
     public void deliverResult(List<Tweet> dataList) {
         if (isReset()) {
-            // An async query came in while the loader is stopped
             emptyDataList(dataList);
             return;
         }
@@ -72,12 +78,7 @@ public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
     }
 
     /**
-     * Starts an asynchronous load of the list data. When the result is ready
-     * the callbacks will be called on the UI thread. If a previous load has
-     * been completed and is still valid the result may be passed to the
-     * callbacks immediately.
-     * <p>
-     * Must be called from the UI thread.
+     * Starts an asynchronous load of the list data.
      */
     @Override
     protected void onStartLoading() {
@@ -95,7 +96,6 @@ public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
      */
     @Override
     protected void onStopLoading() {
-        // Attempt to cancel the current load task if possible.
         cancelLoad();
     }
 
@@ -103,6 +103,7 @@ public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
      * Must be called from the UI thread, triggered by a call to cancel(). Here,
      * we make sure our Cursor is closed, if it still exists and is not already
      * closed.
+     * @param dataList
      */
     @Override
     public void onCanceled(List<Tweet> dataList) {
@@ -119,7 +120,6 @@ public abstract class AbstractTweetLoader extends AsyncTaskLoader<List<Tweet>> {
     @Override
     protected void onReset() {
         super.onReset();
-        // Ensure the loader is stopped
         onStopLoading();
         if (mLastDataList != null && mLastDataList.size() > 0) {
             emptyDataList(mLastDataList);

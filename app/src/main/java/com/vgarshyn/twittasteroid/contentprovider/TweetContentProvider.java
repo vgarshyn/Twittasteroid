@@ -13,6 +13,11 @@ import com.vgarshyn.twittasteroid.contentprovider.tweet.TweetColumns;
 
 import java.util.Arrays;
 
+/**
+ * Content provider with main CRUD operations
+ * <p/>
+ * Created by v.garshyn on 26.07.15.
+ */
 public class TweetContentProvider extends BaseContentProvider {
     public static final String AUTHORITY = "com.twittasteroid";
     public static final String CONTENT_URI_BASE = "content://" + AUTHORITY;

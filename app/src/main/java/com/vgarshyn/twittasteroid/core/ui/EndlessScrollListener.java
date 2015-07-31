@@ -4,12 +4,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
+ * Implementation of infinite pager for RecylerView
+ *
  * Created by v.garshyn on 26.07.15.
  */
 public abstract class EndlessScrollListener extends RecyclerView.OnScrollListener {
-    private int previousTotal = 0; // The total number of items in the dataset after the last load
-    private boolean loading = true; // True if we are still waiting for the last set of data to load.
-    private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 5;
     private int firstVisibleItem;
     private int visibleItemCount;
     private int totalItemCount;
@@ -43,9 +45,7 @@ public abstract class EndlessScrollListener extends RecyclerView.OnScrollListene
             }
         }
         if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
-            // End has been reached
 
-            // Do something
             currentPage++;
 
             onLoadMore(currentPage);
